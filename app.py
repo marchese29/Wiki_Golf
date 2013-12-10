@@ -17,7 +17,12 @@ def hello():
 		'&titles=computing'
 	]))
 
-	return re.findall('\[\[(?!Category:)(?!File:)(?!Image:).*?\]\]', req.text)
+	matches = re.findall('\[\[(?!Category:)(?!File:)(?!Image:).*?\]\]', req.text)
+
+	for match in matches:
+		print match
+
+	return ''.join(matches)
 
 if __name__ == '__main__':
 	app.debug = True
