@@ -1,3 +1,6 @@
+"""Wiki_Golf is made available under the MIT license.  For more details, please
+see the file 'license.txt' in the root of the project.
+"""
 from collections import deque
 import re
 import requests
