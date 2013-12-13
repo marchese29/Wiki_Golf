@@ -71,6 +71,12 @@ class Node(object):
 
 	"""
 	def __init__(self, title):
+		"""Constructs a single instance of the Node class.
+
+		The function accepts one parameter:
+		str -- title: The title of the page that is represented by this node in the page graph.
+
+		"""
 		content = get_content(title)
 		
 		# Retrieve the references
@@ -104,4 +110,41 @@ def run_BFS(start, finish):
 	Returns: list<str> -- A list of pages in order from the start parameter to the finish parameter.
 
 	"""
-	pass
+	
+	# Retrieve the actual finishing title
+	actual_finish = get_actual_title(finish)
+
+	# Keep track of the visited node titles
+	visited = []
+
+	# Pull the starting node
+	start_node = Node(start)
+	start_node.dist = 0
+
+	# The queue for synchronizing the search
+	queue = deque([start_node])
+
+	# Although this could theoretically download the entirety of wikipedia, it should return from
+	# the inside once reaching the ending node.
+	while len(queue) > 0:
+		node = queue.popleft()
+		visited.append(node.title)
+
+		# Note that ref has already been corrected to the potential redirect title.
+		for ref in node.refs:
+			if not ref in [node.title for node in queue] and not ref in visited:
+				ref_node = Node(ref)
+				ref_node.dist = node.dist + 1
+				ref_node.previous = node
+
+				# We check here if we have encountered the finish node.
+				if ref == actual_finish:
+					result = [ref]
+					current = ref_node
+					while current.previous:
+						result.append(current.previous.title)
+						current = current.previous
+					return result.reverse()
+
+	# Holy shit, we just downloaded Wikipedia!
+	return []
